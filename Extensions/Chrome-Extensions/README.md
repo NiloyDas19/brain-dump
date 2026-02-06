@@ -786,6 +786,10 @@ chrome.storage.sync.get(['savedColor'], function(result) {
 5. Color is saved in `chrome.storage`
 6. Next time user visits the page, saved color is applied automatically
 
+### 🎬 Visual Demo
+
+**[Click here to see the interactive animation →](https://niloydas19.github.io/brain-dump/Extensions/Chrome-Extensions//color-changer-visualization.html)**
+
 ---
 
 ## 🎓 Advanced Concepts (Next Steps)
