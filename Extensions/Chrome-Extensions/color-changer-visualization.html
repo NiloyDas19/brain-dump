@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Color Changer Extension - How It Works</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @keyframes slideDown {
+            from { transform: translateY(-20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        
+        @keyframes slideRight {
+            from { transform: translateX(-20px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+        
+        @keyframes messageMove {
+            0% { opacity: 0; transform: scale(0.5); }
+            20% { opacity: 1; transform: scale(1); }
+            80% { opacity: 1; transform: scale(1); }
+            100% { opacity: 0; transform: scale(0.5); }
+        }
+        
+        .animate-slide-down {
+            animation: slideDown 0.5s ease-out forwards;
+        }
+        
+        .animate-slide-right {
+            animation: slideRight 0.5s ease-out forwards;
+        }
+        
+        .animate-fade-in {
+            animation: fadeIn 0.5s ease-out forwards;
+        }
+        
+        .animate-pulse-custom {
+            animation: pulse 0.6s ease-in-out;
+        }
+        
+        .message-animation {
+            animation: messageMove 1.5s ease-in-out forwards;
+        }
+        
+        .arrow {
+            position: relative;
+        }
+        
+        .arrow::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 0;
+            border-style: solid;
+        }
+        
+        .arrow-down::after {
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            border-width: 10px 8px 0 8px;
+            border-color: #94a3b8 transparent transparent transparent;
+        }
+        
+        .arrow-right::after {
+            right: -10px;
+            top: 50%;
+            transform: translateY(-50%);
+            border-width: 8px 0 8px 10px;
+            border-color: transparent transparent transparent #94a3b8;
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-purple-50 to-blue-50 min-h-screen p-8">
+    
+    <div class="max-w-5xl mx-auto">
+        <!-- Header -->
+        <div class="text-center mb-12">
+            <h1 class="text-4xl font-bold text-gray-800 mb-3">🎨 Color Changer Extension</h1>
+            <p class="text-gray-600 text-lg">Visual Flow: What Happens When You Click a Color Button</p>
+        </div>
+
+        <!-- Control Button -->
+        <div class="text-center mb-8">
+            <button 
+                onclick="startAnimation()" 
+                class="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-8 py-3 rounded-lg shadow-lg transition transform hover:scale-105">
+                ▶️ Start Animation
+            </button>
+            <button 
+                onclick="resetAnimation()" 
+                class="ml-4 bg-gray-600 hover:bg-gray-700 text-white font-semibold px-8 py-3 rounded-lg shadow-lg transition transform hover:scale-105">
+                🔄 Reset
+            </button>
+        </div>
+
+        <!-- Main Visualization -->
+        <div class="bg-white rounded-2xl shadow-2xl p-8">
+            
+            <!-- Step 1: User Action -->
+            <div id="step1" class="mb-8 opacity-0">
+                <div class="flex items-center justify-center">
+                    <div class="bg-gradient-to-r from-pink-500 to-rose-500 text-white rounded-xl p-6 shadow-lg max-w-md">
+                        <div class="text-5xl text-center mb-3">👤</div>
+                        <h3 class="text-xl font-bold text-center mb-2">Step 1: User Action</h3>
+                        <p class="text-center">User clicks extension icon and selects a color (e.g., Pink)</p>
+                        <div class="mt-4 flex justify-center">
+                            <div class="w-16 h-16 bg-pink-300 rounded-lg border-4 border-white shadow-md"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Arrow Down -->
+            <div id="arrow1" class="flex justify-center mb-8 opacity-0">
+                <div class="arrow arrow-down w-1 h-12 bg-slate-400"></div>
+            </div>
+
+            <!-- Step 2: Popup.js -->
+            <div id="step2" class="mb-8 opacity-0">
+                <div class="flex items-center justify-center">
+                    <div class="bg-gradient-to-r from-blue-500 to-cyan-500 text-white rounded-xl p-6 shadow-lg max-w-md">
+                        <div class="text-5xl text-center mb-3">📱</div>
+                        <h3 class="text-xl font-bold text-center mb-2">Step 2: popup.js</h3>
+                        <p class="text-center mb-3">Gets the color value and prepares message</p>
+                        <div class="bg-white/20 rounded-lg p-3 font-mono text-sm">
+                            <div>color = "#FFB6C1"</div>
+                            <div>action = "changeColor"</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Arrow Down -->
+            <div id="arrow2" class="flex justify-center mb-8 opacity-0">
+                <div class="arrow arrow-down w-1 h-12 bg-slate-400"></div>
+            </div>
+
+            <!-- Step 3: Message Passing -->
+            <div id="step3" class="mb-8 opacity-0">
+                <div class="flex items-center justify-center relative">
+                    <!-- Message bubble -->
+                    <div id="messageBubble" class="absolute bg-yellow-400 text-gray-800 rounded-full w-20 h-20 flex items-center justify-center text-3xl shadow-xl opacity-0" style="top: 50%; left: 50%; transform: translate(-50%, -50%);">
+                        📨
+                    </div>
+                    
+                    <div class="bg-gradient-to-r from-purple-500 to-indigo-500 text-white rounded-xl p-6 shadow-lg max-w-md">
+                        <div class="text-5xl text-center mb-3">💬</div>
+                        <h3 class="text-xl font-bold text-center mb-2">Step 3: Message Passing</h3>
+                        <p class="text-center mb-3">chrome.tabs.sendMessage()</p>
+                        <div class="bg-white/20 rounded-lg p-3 font-mono text-sm">
+                            <div>Sending to → content.js</div>
+                            <div>Message: {'{'}color, action{'}'}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Arrow Down -->
+            <div id="arrow3" class="flex justify-center mb-8 opacity-0">
+                <div class="arrow arrow-down w-1 h-12 bg-slate-400"></div>
+            </div>
+
+            <!-- Step 4: Content.js -->
+            <div id="step4" class="mb-8 opacity-0">
+                <div class="flex items-center justify-center">
+                    <div class="bg-gradient-to-r from-green-500 to-emerald-500 text-white rounded-xl p-6 shadow-lg max-w-md">
+                        <div class="text-5xl text-center mb-3">⚙️</div>
+                        <h3 class="text-xl font-bold text-center mb-2">Step 4: content.js</h3>
+                        <p class="text-center mb-3">Receives message via chrome.runtime.onMessage</p>
+                        <div class="bg-white/20 rounded-lg p-3 font-mono text-sm">
+                            <div>if (action === "changeColor")</div>
+                            <div>  document.body.style</div>
+                            <div>    .backgroundColor = color</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Arrow Down -->
+            <div id="arrow4" class="flex justify-center mb-8 opacity-0">
+                <div class="arrow arrow-down w-1 h-12 bg-slate-400"></div>
+            </div>
+
+            <!-- Step 5: Web Page Changes -->
+            <div id="step5" class="opacity-0">
+                <div class="flex items-center justify-center">
+                    <div id="webpageBox" class="bg-white border-4 border-gray-300 rounded-xl p-6 shadow-lg max-w-md transition-all duration-500">
+                        <div class="text-5xl text-center mb-3">🌐</div>
+                        <h3 class="text-xl font-bold text-center mb-2 text-gray-800">Step 5: Web Page</h3>
+                        <p class="text-center text-gray-700 mb-4">Background color changes!</p>
+                        <div class="bg-gray-100 rounded-lg p-6 text-center border-2 border-gray-300">
+                            <p class="text-gray-600 mb-2">Website Content</p>
+                            <div class="text-xs text-gray-500">Background: <span id="bgColorText">White</span></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Parallel: Storage -->
+            <div id="step6" class="mt-8 opacity-0">
+                <div class="flex items-center justify-center">
+                    <div class="bg-gradient-to-r from-orange-500 to-amber-500 text-white rounded-xl p-6 shadow-lg max-w-md">
+                        <div class="text-5xl text-center mb-3">💾</div>
+                        <h3 class="text-xl font-bold text-center mb-2">Bonus: Storage</h3>
+                        <p class="text-center mb-3">Color saved for next visit</p>
+                        <div class="bg-white/20 rounded-lg p-3 font-mono text-sm">
+                            <div>chrome.storage.sync.set(</div>
+                            <div>  {'{'} savedColor: color {'}'}</div>
+                            <div>)</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Summary -->
+        <div class="mt-8 bg-blue-50 border-l-4 border-blue-500 rounded-lg p-6">
+            <h3 class="text-xl font-bold text-blue-900 mb-3">📝 Summary</h3>
+            <ol class="space-y-2 text-gray-700">
+                <li><strong>1.</strong> User clicks color button in popup</li>
+                <li><strong>2.</strong> popup.js captures the color value</li>
+                <li><strong>3.</strong> Message sent to content.js via chrome.tabs.sendMessage()</li>
+                <li><strong>4.</strong> content.js receives message and executes the change</li>
+                <li><strong>5.</strong> Web page background color changes instantly</li>
+                <li><strong>6.</strong> Color saved to storage for persistence</li>
+            </ol>
+        </div>
+    </div>
+
+    <script>
+        let animationRunning = false;
+
+        async function sleep(ms) {
+            return new Promise(resolve => setTimeout(resolve, ms));
+        }
+
+        async function startAnimation() {
+            if (animationRunning) return;
+            animationRunning = true;
+            
+            resetAnimation();
+            await sleep(300);
+
+            // Step 1
+            const step1 = document.getElementById('step1');
+            step1.classList.remove('opacity-0');
+            step1.classList.add('animate-slide-down');
+            await sleep(1200);
+
+            // Arrow 1
+            const arrow1 = document.getElementById('arrow1');
+            arrow1.classList.remove('opacity-0');
+            arrow1.classList.add('animate-fade-in');
+            await sleep(600);
+
+            // Step 2
+            const step2 = document.getElementById('step2');
+            step2.classList.remove('opacity-0');
+            step2.classList.add('animate-slide-down');
+            step2.classList.add('animate-pulse-custom');
+            await sleep(1200);
+
+            // Arrow 2
+            const arrow2 = document.getElementById('arrow2');
+            arrow2.classList.remove('opacity-0');
+            arrow2.classList.add('animate-fade-in');
+            await sleep(600);
+
+            // Step 3
+            const step3 = document.getElementById('step3');
+            step3.classList.remove('opacity-0');
+            step3.classList.add('animate-slide-down');
+            await sleep(600);
+
+            // Message bubble animation
+            const messageBubble = document.getElementById('messageBubble');
+            messageBubble.classList.remove('opacity-0');
+            messageBubble.classList.add('message-animation');
+            await sleep(1000);
+
+            // Arrow 3
+            const arrow3 = document.getElementById('arrow3');
+            arrow3.classList.remove('opacity-0');
+            arrow3.classList.add('animate-fade-in');
+            await sleep(600);
+
+            // Step 4
+            const step4 = document.getElementById('step4');
+            step4.classList.remove('opacity-0');
+            step4.classList.add('animate-slide-down');
+            step4.classList.add('animate-pulse-custom');
+            await sleep(1200);
+
+            // Arrow 4
+            const arrow4 = document.getElementById('arrow4');
+            arrow4.classList.remove('opacity-0');
+            arrow4.classList.add('animate-fade-in');
+            await sleep(600);
+
+            // Step 5 - Color change!
+            const step5 = document.getElementById('step5');
+            const webpageBox = document.getElementById('webpageBox');
+            const bgColorText = document.getElementById('bgColorText');
+            
+            step5.classList.remove('opacity-0');
+            step5.classList.add('animate-slide-down');
+            await sleep(500);
+            
+            webpageBox.style.backgroundColor = '#FFB6C1';
+            bgColorText.textContent = 'Pink (#FFB6C1)';
+            bgColorText.classList.add('font-bold', 'text-pink-700');
+            await sleep(800);
+
+            // Step 6 - Storage
+            const step6 = document.getElementById('step6');
+            step6.classList.remove('opacity-0');
+            step6.classList.add('animate-fade-in');
+
+            animationRunning = false;
+        }
+
+        function resetAnimation() {
+            // Reset all elements
+            const elements = ['step1', 'arrow1', 'step2', 'arrow2', 'step3', 'arrow3', 'step4', 'arrow4', 'step5', 'step6'];
+            
+            elements.forEach(id => {
+                const el = document.getElementById(id);
+                el.classList.remove('animate-slide-down', 'animate-fade-in', 'animate-slide-right', 'animate-pulse-custom');
+                el.classList.add('opacity-0');
+            });
+
+            // Reset message bubble
+            const messageBubble = document.getElementById('messageBubble');
+            messageBubble.classList.remove('message-animation');
+            messageBubble.classList.add('opacity-0');
+
+            // Reset webpage background
+            const webpageBox = document.getElementById('webpageBox');
+            const bgColorText = document.getElementById('bgColorText');
+            webpageBox.style.backgroundColor = 'white';
+            bgColorText.textContent = 'White';
+            bgColorText.classList.remove('font-bold', 'text-pink-700');
+        }
+
+        // Auto-start on load
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                if (confirm('🎬 Start the animation automatically?\n\nClick OK to see how the Color Changer extension works!')) {
+                    startAnimation();
+                }
+            }, 500);
+        });
+    </script>
+
+</body>
+</html>
